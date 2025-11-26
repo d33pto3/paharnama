@@ -1,9 +1,10 @@
 import "./App.css";
+import CustomSlider from "./components/CustomSlider";
 
 function App() {
   return (
     <>
-      <h1 className="text-5xl">Text</h1>
+      <CustomSlider />
     </>
   );
 }
