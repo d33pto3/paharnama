@@ -1,10 +1,15 @@
 import "./App.css";
-import CustomSlider from "./components/CustomSlider";
+import FollowCursor from "./components/FollowCursor";
+import Navbar from "./components/Navbar";
+import Pahar from "./components/Pahar";
 
 function App() {
   return (
     <>
-      <CustomSlider />
+      <Navbar>
+        <Pahar />
+      </Navbar>
+      <FollowCursor />
     </>
   );
 }
