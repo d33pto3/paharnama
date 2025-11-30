@@ -45,8 +45,6 @@ const Pahar = () => {
 
   const toggleDrawer = () => setDrawerOpen((prev) => !prev);
 
-  console.log("okoko", selectedMountain);
-
   return (
     <div className="h-screen w-screen overflow-hidden relative">
       <Slider ref={sliderRef} {...settings} className="h-screen">
