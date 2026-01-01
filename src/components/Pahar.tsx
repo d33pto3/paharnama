@@ -88,7 +88,7 @@ const Pahar = ({ drawerOpen, toggleDrawer }: Props) => {
   useEffect(() => {
     const getMountains = async () => {
       try {
-        const res = await axios.get("http://localhost:3030/api/mountains");
+        const res = await axios.get("https://paharnama-backend.onrender.com/api/mountains");
         if (res.data && res.data.length > 0) {
           setMountains(res.data);
           setSelectedMountain(res.data[0]);
