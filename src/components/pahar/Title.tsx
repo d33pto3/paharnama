@@ -6,7 +6,7 @@ import SplitText from "gsap/SplitText";
 gsap.registerPlugin(SplitText);
 
 type Props = {
-  title: string;
+  title: string | undefined;
   isLeaving?: boolean; // Add this prop to trigger exit animation
 };
 

@@ -3,7 +3,7 @@ import { X } from "./animate-ui/icons/x";
 import { AnimateIcon } from "./animate-ui/icons/icon";
 
 export type Mountain = {
-  name: string;
+  key: string;
   altitude: string;
   mountain_img: string;
   country_flag_img?: string;
@@ -44,7 +44,7 @@ const Drawer = ({ mountain, isOpen, closeDrawer }: Props) => {
           {mountain && (
             <div className="flex flex-col gap-4 ">
               <div className="flex gap-2 items-center text-center">
-                <h2 className="text-3xl font-bold">{mountain.name}</h2>
+                <h2 className="text-3xl font-bold">{mountain.key}</h2>
                 <div className="relative">
                   {showTooltip && (
                     <p className="absolute left-6 text-nowrap text-xs text-gray-500 border px-2 rounded-xs bg-red-100">
