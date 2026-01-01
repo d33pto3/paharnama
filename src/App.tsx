@@ -10,7 +10,7 @@ function App() {
 
   return (
     <>
-      <Navbar drawerOpen={drawerOpen}>
+      <Navbar>
         <Pahar drawerOpen={drawerOpen} toggleDrawer={toggleDrawer} />
       </Navbar>
       <FollowCursor />

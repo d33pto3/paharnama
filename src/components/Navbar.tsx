@@ -2,20 +2,13 @@ import React from "react";
 
 type Props = {
   children: React.ReactElement;
-  drawerOpen: boolean;
 };
 
-const Navbar = ({ children, drawerOpen }: Props) => {
+const Navbar = ({ children }: Props) => {
   return (
     <>
-      <div
-        className={`fixed top-0 z-1 backdrop-blur-lg px-16 py-2 transition-all duration-300 right-0 ${
-          drawerOpen
-            ? "left-[85vw] sm:left-[70vw] md:left-[380px] lg:left-[440px] xl:left-[500px]"
-            : "left-0"
-        }`}
-      >
-        <div>
+      <div className="absolute top-0 w-full z-10 px-16 py-4">
+        <div className="rounded-full w-18 h-18 flex items-center justify-center backdrop-blur-xs backdrop-saturate-250 bg-white/10 border border-white/50 shadow-lg shadow-black/5">
           <img src="/images/icon/mountain.svg" className="h-14 w-14 invert" />
         </div>
       </div>
