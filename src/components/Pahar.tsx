@@ -53,7 +53,7 @@ const Pahar = ({ drawerOpen, toggleDrawer }: Props) => {
         return;
       }
 
-      const handleInitiation = (type: string) => {
+      const handleInitiation = () => {
         if (!isTransitioning.current) {
           setIsContentLeaving(true);
         }
@@ -61,7 +61,7 @@ const Pahar = ({ drawerOpen, toggleDrawer }: Props) => {
 
       const onWheel = (e: WheelEvent) => {
         e.preventDefault();
-        handleInitiation("wheel");
+        handleInitiation();
         
         if (isTransitioning.current) return;
 
