@@ -25,7 +25,7 @@ const Title = ({ title, isLeaving = false }: Props) => {
     const init = async () => {
       // Wait for fonts to be ready to avoid 'SplitText called before fonts loaded'
       await document.fonts.ready;
-      
+
       if (!titleRef.current) return;
 
       if (tlRef.current) tlRef.current.kill();
@@ -43,11 +43,11 @@ const Title = ({ title, isLeaving = false }: Props) => {
         // Entrance animation - more snappy and powerful
         tl.fromTo(
           split.chars,
-          { 
-            y: 60, 
+          {
+            y: 60,
             opacity: 0,
             scale: 0.9,
-            filter: "blur(10px)"
+            filter: "blur(10px)",
           },
           {
             y: 0,
@@ -56,7 +56,7 @@ const Title = ({ title, isLeaving = false }: Props) => {
             filter: "blur(0px)",
             stagger: {
               each: 0.02,
-              from: "center"
+              from: "center",
             },
             ease: "power4.out",
             duration: 0.8,
@@ -71,7 +71,7 @@ const Title = ({ title, isLeaving = false }: Props) => {
           filter: "blur(10px)",
           stagger: {
             each: 0.015,
-            from: "edges"
+            from: "edges",
           },
           ease: "power2.inOut",
           duration: 0.6,
@@ -91,7 +91,7 @@ const Title = ({ title, isLeaving = false }: Props) => {
 
   const handleMouseMove = (e: React.MouseEvent<HTMLHeadingElement>) => {
     if (!splitRef.current || isLeaving) return;
-    
+
     const chars = splitRef.current.chars;
     const titleElement = titleRef.current;
     if (!titleElement) return;
@@ -110,18 +110,18 @@ const Title = ({ title, isLeaving = false }: Props) => {
       const dy = mouseY - charCenterY;
       const distance = Math.sqrt(dx * dx + dy * dy);
 
-      // Multi-layered influence zones for hazy effect
-      const maxDistance = 200;
+      // Define clear boundaries for the effect
+      const maxDistance = 150;
       const strength = Math.max(0, 1 - distance / maxDistance);
-      const intensity = Math.pow(strength, 1.5);
 
-      // Only hazy (blur) effect
-      const blur = intensity * 12;
+      // Use a more predictable easing for the blur
+      // Apply blur only if significantly close to avoid flickering
+      const blur = strength > 0.1 ? strength * 8 : 0;
 
       gsap.to(char, {
-        filter: `blur(${blur}px)`,
-        duration: 0.6,
-        ease: "power2.out",
+        filter: blur > 0.5 ? `blur(${blur}px)` : "none",
+        duration: 0.4,
+        ease: "sine.out",
         overwrite: "auto",
       });
     });
@@ -129,16 +129,13 @@ const Title = ({ title, isLeaving = false }: Props) => {
 
   const handleMouseLeave = () => {
     if (!splitRef.current || isLeaving) return;
-    
-    // Smooth return to clear state
+
+    // Immediate but smooth cleanup
+    gsap.killTweensOf(splitRef.current.chars);
     gsap.to(splitRef.current.chars, {
-      filter: "blur(0px)",
-      stagger: {
-        each: 0.01,
-        from: "center",
-      },
+      filter: "none",
       ease: "power2.out",
-      duration: 0.5,
+      duration: 0.4,
     });
   };
 
