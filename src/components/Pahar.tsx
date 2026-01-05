@@ -15,33 +15,37 @@ const Pahar = ({ drawerOpen, toggleDrawer }: Props) => {
   const sliderRef = useRef<Slider | null>(null);
   const isTransitioning = useRef(false);
 
-
   const [mountains, setMountains] = useState<Mountain[] | []>([]);
   const [selectedMountain, setSelectedMountain] = useState<Mountain | null>(
     null
   );
   const [isContentLeaving, setIsContentLeaving] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [showTooltip, setShowTooltip] = useState(false);
 
-  const settings = useMemo(() => ({
-    dots: false,
-    infinite: true,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: true,
-    autoplay: false,
-    speed: 1500,
-    beforeChange: (oldIndex: number, newIndex: number) => {
-      if (oldIndex !== newIndex) {
-        isTransitioning.current = true;
-      }
-    },
-    afterChange: (currentIndex: number) => {
-      setSelectedMountain(mountains[currentIndex]);
-      setIsContentLeaving(false);
-      isTransitioning.current = false;
-    },
-  }), [mountains]);
+  const settings = useMemo(
+    () => ({
+      dots: false,
+      infinite: true,
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      arrows: true,
+      autoplay: false,
+      speed: 1500,
+      beforeChange: (oldIndex: number, newIndex: number) => {
+        if (oldIndex !== newIndex) {
+          isTransitioning.current = true;
+        }
+      },
+      afterChange: (currentIndex: number) => {
+        setSelectedMountain(mountains[currentIndex]);
+        setIsContentLeaving(false);
+        isTransitioning.current = false;
+      },
+    }),
+    [mountains]
+  );
 
   useEffect(() => {
     let rafId: number;
@@ -62,7 +66,7 @@ const Pahar = ({ drawerOpen, toggleDrawer }: Props) => {
       const onWheel = (e: WheelEvent) => {
         e.preventDefault();
         handleInitiation();
-        
+
         if (isTransitioning.current) return;
 
         if (e.deltaY > 0) {
@@ -83,12 +87,12 @@ const Pahar = ({ drawerOpen, toggleDrawer }: Props) => {
     return () => cancelAnimationFrame(rafId);
   }, [mountains]); // Re-attach if mountains load and slider rebuilds
 
-
-
   useEffect(() => {
     const getMountains = async () => {
       try {
-        const res = await axios.get("https://paharnama-backend.onrender.com/api/mountains");
+        const res = await axios.get(
+          "https://paharnama-backend.onrender.com/api/mountains"
+        );
         if (res.data && res.data.length > 0) {
           setMountains(res.data);
           setSelectedMountain(res.data[0]);
@@ -108,11 +112,11 @@ const Pahar = ({ drawerOpen, toggleDrawer }: Props) => {
   if (isError || mountains.length === 0) {
     return (
       <div className="h-screen w-screen relative overflow-hidden flex items-center justify-center bg-gray-900">
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
-          style={{ 
+          style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=2070&auto=format&fit=crop')`,
-            filter: 'brightness(0.4)'
+            filter: "brightness(0.4)",
           }}
         />
         <div className="relative z-10 text-center px-6">
@@ -123,7 +127,11 @@ const Pahar = ({ drawerOpen, toggleDrawer }: Props) => {
             Server is currently resting. Please try again later.
           </p>
           <div className="mt-8 opacity-20 animate-pulse">
-            <img src="/images/icon/mountain.svg" className="w-16 h-16 mx-auto invert" alt="mountain icon" />
+            <img
+              src="/images/icon/mountain.svg"
+              className="w-16 h-16 mx-auto invert"
+              alt="mountain icon"
+            />
           </div>
         </div>
       </div>
@@ -133,10 +141,17 @@ const Pahar = ({ drawerOpen, toggleDrawer }: Props) => {
   return (
     <div className="h-screen w-screen overflow-hidden relative">
       <div className="h-full w-full relative">
-        <Slider ref={sliderRef} {...settings} className="h-screen pahar-slider"
-        >
+        <Slider ref={sliderRef} {...settings} className="h-screen pahar-slider">
           {mountains?.map((mountain: Mountain) => (
-            <div key={mountain.key} className="relative w-screen h-screen">
+            <div
+              key={mountain.key}
+              className="relative w-screen h-screen"
+              onMouseMove={(e) => {
+                setMousePos({ x: e.clientX, y: e.clientY });
+                setShowTooltip(true);
+              }}
+              onMouseLeave={() => setShowTooltip(false)}
+            >
               <div
                 className="w-full h-full bg-cover bg-center cursor-pointer"
                 style={{ backgroundImage: `url(${mountain.mountain_img})` }}
@@ -156,8 +171,26 @@ const Pahar = ({ drawerOpen, toggleDrawer }: Props) => {
               : "left-0"
           }`}
         >
-          <Title key={selectedMountain?.key} title={selectedMountain?.key} isLeaving={isContentLeaving} />
+          <Title
+            key={selectedMountain?.key}
+            title={selectedMountain?.key}
+            isLeaving={isContentLeaving}
+          />
         </div>
+
+        {showTooltip && !drawerOpen && (
+          <div
+            className="fixed pointer-events-none z-50 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-white text-[10px] font-medium tracking-[0.2em] uppercase transition-opacity duration-300 shadow-xl flex items-center gap-2"
+            style={{
+              left: mousePos.x + 20,
+              top: mousePos.y + 20,
+              transform: "translate(0, 0)",
+            }}
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+            click to see info
+          </div>
+        )}
       </div>
 
       <Drawer
